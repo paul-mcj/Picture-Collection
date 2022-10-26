@@ -95,6 +95,7 @@ const NewPictureForm = ({ onAddPicture }) => {
     };
 
     // variable for JSX slimming -- create a new <InputField /> component with appropriate reducer logic for each field specified in the inputFields array (this makes returned JSX dynamic, as any number of fields can be easily manipulated and each is easily maintainable right here).
+    // fixme: need a prop fav={false} by default?
     const newInputField = inputFields.map((field) => (
         <InputField
             key={field}

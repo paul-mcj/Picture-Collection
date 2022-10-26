@@ -1,36 +1,50 @@
 // components
 import AllPictures from "./pages/AllPictures";
-import NewPicture from "./pages/NewPicture";
 import Favourites from "./pages/Favourites";
 import MainNav from "./components/layout/MainNav";
-import Toast from "./components/ui/Toast";
+import About from "./pages/About";
 
 // react router dom
 import { Route, Routes } from "react-router-dom";
 
-// material UI
-import { Box, ThemeProvider, createTheme } from "@mui/material";
+// material ui
+import Box from "@mui/material/Box";
+import { ThemeProvider } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 
-// create dark theme and call it in <App /> component
+// fixme: create dark theme and call it in <App /> component
 const darkTheme = createTheme({
-    palette: { mode: "dark" },
+    palette: {
+        mode: "light",
+        primary: {
+            main: "#ffb414",
+        },
+        secondary: {
+            main: "#0087ff",
+        },
+    },
 });
 
 const App = () => {
     return (
         <ThemeProvider theme={darkTheme}>
-            <MainNav />
-
-            {/* all pages are held to the same consistent padding */}
+            <Typography component="header">Picture Collection</Typography>
+            {/* login page */}
+            {/* create account page */}
+            {/* all pages are held to the same consistent padding -- fixme: adjust once masonry is applied??*/}
             <Box sx={{ mx: { xs: "50px", md: "200px" } }}>
                 <Routes>
-                    {/* handle default path to AllPictures, notice how the path is explicitly set with a prop called "exact"*/}
+                    {/* default path to <AllPictures />*/}
                     <Route path="/" exact element={<AllPictures />} />
-                    <Route path="/new-picture" element={<NewPicture />} />
                     <Route path="/favourites" element={<Favourites />} />
+                    <Route path="/about" element={<About />} />
                 </Routes>
             </Box>
-            <Toast />
+            {/* fixme: BottomNavigation and FAB on mobile screen? add cool scroll animations with framer motion!! */}
+            <MainNav />
+            {/* fixme: toast needs its own context? */}
+            {/* <Toast /> */}
         </ThemeProvider>
     );
 };

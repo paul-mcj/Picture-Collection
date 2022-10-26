@@ -43,11 +43,11 @@ const AllPictures = () => {
         };
 
         // fixme: fetchData function should run only if there is no data (otherwise fetchData would be executed everytime this page component is re-evaluated)
-        if (data.length === 0) {
-            fetchData();
-            console.log("fetching data");
-        }
-    }, [data]);
+        // if (data.length === 0) {
+        fetchData();
+        console.log("fetching data");
+        // }
+    }, []);
 
     return (
         <Fragment>

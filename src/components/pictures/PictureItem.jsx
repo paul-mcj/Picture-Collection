@@ -40,6 +40,7 @@ const PictureItem = ({ picture }) => {
     };
 
     return (
+        // <ImageList variant="masonry" cols={3} gap={8} >
         <ImageList cols={1}>
             <ImageListItem key={picture.id}>
                 <img src={`${picture.image}`} alt={`${picture.title}`} />
