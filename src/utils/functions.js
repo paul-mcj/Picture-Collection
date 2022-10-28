@@ -10,6 +10,8 @@ const populateInit = (field) => {
         };
 
         Object.assign(returnedObj, tempObj);
+        // fixme: does spreading work?
+        // returnedObj = {...tempObj};
     }
 
     return returnedObj;

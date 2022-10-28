@@ -12,9 +12,6 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import InfoIcon from "@mui/icons-material/Info";
 import Paper from "@mui/material/Paper";
 
-// components
-import FloatingActionButton from "../ui/FloatingActionButton";
-
 const MainNav = () => {
     // state to determine what page is current (<AllPictures /> by default)
     const [page, setPage] = useState("all-pictures");
@@ -26,7 +23,6 @@ const MainNav = () => {
 
     return (
         <nav>
-            <FloatingActionButton />
             <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }} elevation={3}>
                 <BottomNavigation value={page} onChange={onChange}>
                     <BottomNavigationAction

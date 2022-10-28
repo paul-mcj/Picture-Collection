@@ -34,6 +34,7 @@ const About = () => {
                 </li>
                 <li>use framer motion for cool shit!</li>
                 <li>give credit to unsplash??</li>
+                <li>https://www.pinterest.ca/pin/500884789810221499/</li>
             </ul>
         </div>
     );

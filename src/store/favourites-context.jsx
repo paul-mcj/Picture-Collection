@@ -34,6 +34,8 @@ const FavouritesContextProvider = ({ children }) => {
             found = tempArr.indexOf(pictureObj);
             // remove found picture from tempArr
             tempArr.splice(found, 1);
+            // fixme: can the above two lines of code be condensed with:
+            // tempArr.filter((pic)=>{pic.id!==pictureObj.id})    ???
             // now update state
             setFavPics((prev) => {
                 return tempArr;
@@ -53,11 +55,11 @@ const FavouritesContextProvider = ({ children }) => {
         isFavouritePicture,
     };
 
-    return <FavouritesContextProvider value={context}>{children}</FavouritesContextProvider>;
+    return <FavouritesContext.Provider value={context}>{children}</FavouritesContext.Provider>;
 };
 
 FavouritesContext.PropTypes = {
-    children: PropTypes.number.isRequired,
+    children: PropTypes.node.isRequired,
 };
 
 export { FavouritesContextProvider, FavouritesContext };
