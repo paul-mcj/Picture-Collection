@@ -20,33 +20,33 @@ import { motion } from "framer-motion";
 
 const Login = () => {
     // create an array for input fields to be populated
-    const inputFields = ["username", "password"];
+    // const inputFields = ["username", "password"];
     // given the above array, create an init object for the reducer with populated input fields
     // const init = populateInit(inputFields);
 
-    const [focus, setFocus] = useState(false);
+    // const [focus, setFocus] = useState(false);
 
-    const xxx = (e) => {
-        setFocus(() => !focus);
-    };
+    // const xxx = (e) => {
+    //     setFocus(() => !focus);
+    // };
 
-    let poop = "";
+    // let poop = "";
 
-    focus ? (poop = 1.02) : (poop = 1);
+    // focus ? (poop = 1.02) : (poop = 1);
 
-    let elevation = (
-        <motion.div
-            initial={{ scale: 1 }}
-            animate={{ scale: `${poop}` }}
-            transition={{
-                duration: 0.5,
-            }}
-        >
-            <InputField id="username" label="Username" onFocus={xxx}>
-                <PersonIcon />
-            </InputField>
-        </motion.div>
-    );
+    // let elevation = (
+    //     <motion.div
+    //         initial={{ scale: 1 }}
+    //         animate={{ scale: `${poop}` }}
+    //         transition={{
+    //             duration: 0.5,
+    //         }}
+    //     >
+    //         <InputField id="username" label="Username" onFocus={xxx}>
+    //             <PersonIcon />
+    //         </InputField>
+    //     </motion.div>
+    // );
 
     return (
         <StartingTemplate
@@ -55,16 +55,19 @@ const Login = () => {
             header="Login"
             subText="Please login to continue"
             fabText="Login"
-            fabSx={{ background: "linear-gradient(to left,  #e6a212,#ffb414)" }}
+            fabSx={{ background: "linear-gradient(to left, #e6a212, #ffb414)" }}
             ctaText="Don't have an account?"
-            link="/"
-            linkText="Sign up"
+            link="/signup"
+            linkText=" Sign up"
         >
             {/* fixme: these two components are placeholders, eventually they will use same custom hook/reducer logic as the form inputs used in <AllPictures /> component! */}
-            {/* <InputField id="username" label="Username" onFocus={xxx}>
-                    <PersonIcon />
-                </InputField> */}
-            {elevation}
+            <InputField id="username" label="Username" color="primary">
+                {/* {isEmpty && PersonIconOutline : PersonIconFilled} */}
+                <PersonIcon />
+            </InputField>
+            <InputField id="password" label="Password" color="primary">
+                <PasswordIcon />
+            </InputField>
         </StartingTemplate>
     );
 };

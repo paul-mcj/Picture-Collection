@@ -9,12 +9,12 @@ const SignUp = () => {
             color2="secondaryShade1"
             header="Sign Up"
             fabText="Sign Up"
-            fabSx={{ background: "linear-gradient(to left,  ##1255e6,#145eff)" }}
+            fabSx={{ background: "linear-gradient(to left,  #1255e6,#145eff)" }}
             ctaText="Already have an account?"
-            link="/"
-            linkText="Sign in"
+            link="/login"
+            linkText=" Sign in"
         >
-            <InputField id="test" label="testing" />
+            <InputField id="test" label="testing" color="secondary" />
         </StartingTemplate>
     );
 };
