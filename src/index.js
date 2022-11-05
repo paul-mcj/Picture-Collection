@@ -9,11 +9,12 @@ import { createTheme } from "@mui/material/styles";
 // react router dom
 import { BrowserRouter } from "react-router-dom";
 
+// redux
+import { Provider } from "react-redux";
+import store from "./store/redux-logic";
+
 // components
 import App from "./App";
-
-// context
-import { AuthenticationContextProvider } from "./store/authentication-context";
 
 // create theme for application
 const theme = createTheme({
@@ -55,12 +56,12 @@ const theme = createTheme({
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <React.StrictMode>
-        <BrowserRouter>
-            <AuthenticationContextProvider>
+        <Provider store={store}>
+            <BrowserRouter>
                 <ThemeProvider theme={theme}>
                     <App />
                 </ThemeProvider>
-            </AuthenticationContextProvider>
-        </BrowserRouter>
+            </BrowserRouter>
+        </Provider>
     </React.StrictMode>
 );

@@ -1,30 +1,27 @@
-// react and misc.
-import PropTypes from "prop-types";
-import { createContext, useState } from "react";
+// redux
+import { createSlice } from "@reduxjs/toolkit";
 
-const AuthenticationContext = createContext({
-    isLoggedIn: false,
+// init object value for state slice
+const initialAuthorizationState = { isAuthorized: false };
+
+// create slice for redux state
+const authorizationSlice = createSlice({
+    name: "authorization",
+    initialState: initialAuthorizationState,
+    reducers: {
+        login(state) {
+            state.isAuthorized = true;
+        },
+        logout(state) {
+            state.isAuthorized = false;
+        },
+    },
 });
 
-const AuthenticationContextProvider = ({ children }) => {
-    // check if user is logged in (false by default)
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+// specifically grab slice actions
+const authorizationActions = authorizationSlice.actions;
 
-    // update context object for JSX
-    const context = {
-        isUserLoggedIn,
-    };
-
-    return (
-        <AuthenticationContext.Provider value={context}>{children}</AuthenticationContext.Provider>
-    );
-};
-
-AuthenticationContext.PropTypes = {
-    children: PropTypes.node.isRequired,
-};
-
-export { AuthenticationContextProvider, AuthenticationContext };
+export { authorizationActions, authorizationSlice };
 
 // logic for signing in app :
 // validation that a string of at least one char was put into both username and password fields

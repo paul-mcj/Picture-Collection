@@ -1,5 +1,5 @@
 // react & misc
-import { Fragment, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 // components
 import PictureList from "../components/pictures/PictureList";
@@ -7,6 +7,8 @@ import FloatingActionButton from "../components/ui/FloatingActionButton";
 
 // material ui
 import { Typography } from "@mui/material";
+import { Card } from "@mui/material";
+import { CardContent } from "@mui/material";
 
 // uuid
 import { v4 as uuidv4 } from "uuid";
@@ -55,11 +57,13 @@ const AllPictures = () => {
     // fixme: DELETE request to server if user wants to delete pictures from array
 
     return (
-        <Fragment>
-            <Typography variant="h4">All Pictures</Typography>
-            <PictureList data={data} />
-            <FloatingActionButton />
-        </Fragment>
+        <Card>
+            <CardContent>
+                <Typography variant="h4">All Pictures</Typography>
+                <PictureList data={data} />
+                <FloatingActionButton />
+            </CardContent>
+        </Card>
     );
 };
 

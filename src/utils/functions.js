@@ -1,29 +1,28 @@
 // takes in an unknown amount of arguments and creates three key:value pairs for each argument to set initialized values for reducer logic (consolidates all key:value pairs into one finalized object to be used for initial reduction state).
-// const populateInit = (field) => {
-//     let returnedObj = {};
+const populateInit = (field) => {
+    let returnedObj = {};
 
-//     for (let i = 0; i < field.length; i++) {
-//         let tempObj = {
-//             [`${field[i]}Value`]: "",
-//             [`${field[i]}Blur`]: false,
-//             [`${field[i]}Helper`]: "",
-//         };
+    for (let i = 0; i < field.length; i++) {
+        let tempObj = {
+            [`${field[i]}InputValue`]: "",
+            [`${field[i]}IsValid`]: false,
+            [`${field[i]}HelperText`]: "",
+        };
 
-//         Object.assign(returnedObj, tempObj);
-//         // fixme: does spreading work?
-//         // returnedObj = {...tempObj};
-//     }
+        // fixme: does spreading work?
+        Object.assign(returnedObj, tempObj);
+    }
 
-//     return returnedObj;
-// };
-const populateInit = (inputField) => {
-    const obj = {
-        [`${inputField}Value`]: "",
-        [`${inputField}Blur`]: false,
-        [`${inputField}Helper`]: "",
-    };
-    return obj;
+    return returnedObj;
 };
+// const populateInit = (inputField) => {
+//     const obj = {
+//         [`${inputField}InputValue`]: "",
+//         [`${inputField}IsValid`]: false,
+//         [`${inputField}HelperText`]: "",
+//     };
+//     return obj;
+// };
 
 // if a value is found to be empty, a dispatch function is called to show an error (used for multiple validation checks for <InputField /> component reducer logic).
 const checkValueField = (value, id, dispatch) => {

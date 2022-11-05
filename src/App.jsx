@@ -1,21 +1,18 @@
-// react and misc
-import { useContext } from "react";
-
-// context
-import { AuthenticationContext } from "./store/authentication-context";
-
 // components
 import MainContent from "./components/layout/MainContent";
 import AppEntry from "./components/layout/AppEntry";
 
+// redux
+import { useSelector } from "react-redux";
+
 const App = () => {
-    // context determines if a user is currently signed in or not
-    const { isUserLoggedIn } = useContext(AuthenticationContext);
+    // access redux state for authorization checking
+    const isAuthorized = useSelector((state) => state.authorization.isAuthorized);
 
     return (
         <div>
-            {isUserLoggedIn ? <MainContent /> : <AppEntry />}
-            {/* fixme: toast needs its own context? always in App.jsx*/}
+            {isAuthorized ? <MainContent /> : <AppEntry />}
+            {/* fixme: toast needs to be part of redux? always in App.jsx*/}
             {/* <Toast /> */}
         </div>
     );
