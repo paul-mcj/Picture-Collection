@@ -24,6 +24,12 @@ const populateInit = (field) => {
 //     return obj;
 // };
 
+// validation function returns true if input isn't empty or whitespace
+const isInputValid = (inputValue) => {
+    if (inputValue.trim().length === 0) return false;
+    else return true;
+};
+
 // if a value is found to be empty, a dispatch function is called to show an error (used for multiple validation checks for <InputField /> component reducer logic).
 const checkValueField = (value, id, dispatch) => {
     let type = "";
@@ -31,4 +37,4 @@ const checkValueField = (value, id, dispatch) => {
     dispatch({ type, target: id });
 };
 
-export { populateInit, checkValueField };
+export { populateInit, checkValueField, isInputValid };

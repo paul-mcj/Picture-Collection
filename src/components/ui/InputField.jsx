@@ -1,68 +1,16 @@
-// material ui
-import { TextField } from "@mui/material";
-
 // react & misc
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
 // material ui
-import PersonIcon from "@mui/icons-material/Person";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import PasswordIcon from "@mui/icons-material/Password";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
 
-// utils
-import { populateInit } from "../../utils/functions";
+// hooks
+import useInputField from "../../hooks/useInputField";
 
-// reducer logic for each <Form /> component
-const reducer = (state, action) => {
-    switch (action.type) {
-        case "VALUE_CHANGE":
-            return {
-                ...state,
-                [`${action.target}InputValue`]: action.payload,
-            };
-        case "IS_ERROR":
-            let url;
-            action.target === "image" ? (url = "url") : (url = "");
-            return {
-                ...state,
-                [`${action.target}IsValid`]: true,
-                [`${action.target}HelperText`]: `Please enter a valid ${action.target} ${url}`,
-            };
-        case "ERROR_RESOLVED":
-            return {
-                ...state,
-                [`${action.target}IsValid`]: false,
-                [`${action.target}HelperText`]: "",
-            };
-        default:
-            return state;
-    }
-};
-
-// anytime an <InputField /> value changes it updates the corresponding object value in the reducer object via dispatch
-// const onChange = (e) => {
-//     dispatch({ type: "VALUE_CHANGE", target: `${e.target.id}`, payload: e.target.value });
-
-//     // immediately check if the new value is valid, if not show error
-//     checkValueField(e.target.value, e, dispatch);
-// };
-
-// // if any <InputField /> value is empty an error is dispatched
-// const onBlur = (e) => {
-//     checkValueField(state[`${e.target.id}InputValue`], e, dispatch);
-// };
-
-// fixme:
-// const [focus, setFocus] = useState(false);
-
-// const xxx = (e) => {
-//     setFocus(() => !focus);
-// };
+// fixme: password fields need visible/not visible state, and animation needs to "pop out" the field when in focus. Also, needs own validation depending on type (so passwords need regex, image needs url, etc.).
 
 // let poop = "";
 
@@ -82,33 +30,60 @@ const reducer = (state, action) => {
 //     </motion.div>
 // );
 
-const InputField = ({ id, label, type, multiline, error, onChange, onBlur, helperText }) => {
-    // const [state, dispatch] = useReducer(reducer, );
+const InputField = ({ id, children, color, isError, type, variant }) => {
+     // use custom hook
+     const { inputValue, inputIsValid, handleOnChange, handleBlur } =
+          useInputField();
 
-    return (
-        <TextField
-            margin="dense"
-            id={id}
-            label={label}
-            type={type}
-            multiline={true}
-            error={true}
-            onChange={onChange}
-            onBlur={onBlur}
-            helperText={"sjsj"}
-        />
-    );
+     // change helper text depending on what type it is
+     const inputType = (id) => {
+          if (id === "password") return "Password must contain 5 characters";
+          else if (id === "url") return "Please enter a valid url";
+          else {
+               return `Please enter a valid ${id}`;
+          }
+     };
+
+     // only show helper text if there is an error
+     let helperText = !inputIsValid && inputType(id);
+
+     // pass value to parent
+     // isError(inputIsValid);
+
+     return (
+          <TextField
+               margin="dense"
+               color={color === "Sign Up" ? "secondaryShade1" : "primaryShade1"}
+               id={id}
+               type={type}
+               multiline={id === "description" ? true : false}
+               label={
+                    !variant &&
+                    id[0].toUpperCase() + id.substring(1).toLowerCase()
+               }
+               error={!inputIsValid}
+               onChange={handleOnChange}
+               onBlur={handleBlur}
+               variant={variant}
+               value={inputValue}
+               helperText={helperText}
+               InputProps={{
+                    startAdornment: (
+                         <InputAdornment position="start">
+                              {children}
+                         </InputAdornment>
+                    ),
+               }}
+          />
+     );
 };
 
 InputField.propTypes = {
-    id: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-    type: PropTypes.string,
-    multiline: PropTypes.bool,
-    error: PropTypes.bool,
-    onChange: PropTypes.func,
-    onBlur: PropTypes.func,
-    helperText: PropTypes.string,
+     id: PropTypes.string.isRequired,
+     type: PropTypes.string,
+     children: PropTypes.node,
+     isError: PropTypes.func,
+     variant: PropTypes.string,
 };
 
 export default InputField;
