@@ -19,6 +19,11 @@ import PasswordField from "./PasswordField";
 const SignupStepper = () => {
      // active step is 0 by default
      const [activeStep, setActiveStep] = useState(0);
+     const [continueBtn, setContinueBtn] = useState(false);
+
+     const showContinueBtn = () => {
+          setContinueBtn(() => !continueBtn);
+     };
 
      const handleNext = () => {
           setActiveStep((prev) => prev + 1);
@@ -28,28 +33,16 @@ const SignupStepper = () => {
           setActiveStep((prev) => prev - 1);
      };
 
-     // all <Step /> objects have label and descriptions to map through in JSX
-     const steps = [
-          { label: "Please enter a username", description: "" },
-          { label: "", description: "" },
-          { label: "", description: "" },
-          { label: "", description: "" },
-     ];
-
-     // fixme: there is a simple Stepper component for new users, that walks through setting up
-     // their username (checks if it is taken), sets password, asks for re-enter
-     // password, and asks them to select one of a few given categories (ex. sports,
-     // food, etc).
-     //  fixme: step content is more InputField elements that have validation before continuing on
-     // fixme: show a progress meter when creating a new profile!
      return (
           <Stepper activeStep={activeStep} orientation="vertical">
                <Step>
                     <StepLabel>Create a username</StepLabel>
                     <StepContent>
                          <UsernameField variant="standard" />
-                         {/* continue button only shows up when field is valid (at least one character is there). Once continue occurs, check firebase to see if user is made or not (loading icon), and display a toast if success or error) */}
-                         <Button onClick={handleNext}>Continue</Button>
+                         {/* continue button only shows up when field is valid (at least one character is there). Once continue occurs, check firebase to see if user is made or not (loading icon), and display a toast if success or error. if error, erase state and try again.) */}
+                         {continueBtn && (
+                              <Button onClick={handleNext}>Continue</Button>
+                         )}
                     </StepContent>
                </Step>
 

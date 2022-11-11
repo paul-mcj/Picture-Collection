@@ -1,14 +1,14 @@
 // react & misc
 import PropTypes from "prop-types";
-import { useState } from "react";
 import { motion } from "framer-motion";
 
 // material ui
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 
-// hooks
-import useInputField from "../../hooks/useInputField";
+// redux
+import { loginActions } from "../../store/login-slice";
+import { useDispatch, useSelector } from "react-redux";
 
 // fixme: password fields need visible/not visible state, and animation needs to "pop out" the field when in focus. Also, needs own validation depending on type (so passwords need regex, image needs url, etc.).
 
@@ -30,25 +30,49 @@ import useInputField from "../../hooks/useInputField";
 //     </motion.div>
 // );
 
-const InputField = ({ id, children, color, isError, type, variant }) => {
-     // use custom hook
-     const { inputValue, inputIsValid, handleOnChange, handleBlur } =
-          useInputField();
+const InputField = ({ id, children, color, type, variant }) => {
+     // redux
+     const dispatch = useDispatch();
 
-     // change helper text depending on what type it is
-     const inputType = (id) => {
-          if (id === "password") return "Password must contain 5 characters";
-          else if (id === "url") return "Please enter a valid url";
-          else {
-               return `Please enter a valid ${id}`;
+     // logic redux values
+     const usernameValue = useSelector((state) => state.login.usernameValue);
+     const passwordValue = useSelector((state) => state.login.passwordValue);
+     const usernameBlur = useSelector((state) => state.login.usernameBlur);
+     const passwordBlur = useSelector((state) => state.login.passwordBlur);
+     const usernameIsValid = useSelector(
+          (state) => state.login.usernameIsValid
+     );
+     const passwordIsValid = useSelector(
+          (state) => state.login.passwordIsValid
+     );
+
+     // update current state to input value
+     const handleOnChange = (e) => {
+          if (id === "password") {
+               dispatch(loginActions.changePasswordValue(e.target.value));
+          } else {
+               dispatch(loginActions.changeUsernameValue(e.target.value));
           }
      };
 
-     // only show helper text if there is an error
-     let helperText = !inputIsValid && inputType(id);
+     // change blur state
+     const handleOnBlur = () => {
+          if (id === "password") {
+               dispatch(loginActions.togglePasswordBlur());
+               dispatch(loginActions.checkPassword(passwordValue));
+          } else {
+               dispatch(loginActions.toggleUsernameBlur());
+               dispatch(loginActions.checkUsername(usernameValue));
+          }
+     };
 
-     // pass value to parent
-     // isError(inputIsValid);
+     // change helper text depending on what type it is
+     let helperText = "";
+     if (id === "password") {
+          helperText = "Password must contain 5 characters";
+     } else {
+          helperText = `Please enter a valid ${id}`;
+     }
 
      return (
           <TextField
@@ -61,12 +85,16 @@ const InputField = ({ id, children, color, isError, type, variant }) => {
                     !variant &&
                     id[0].toUpperCase() + id.substring(1).toLowerCase()
                }
-               error={!inputIsValid}
+               error={id === "password" ? !passwordIsValid : !usernameIsValid}
                onChange={handleOnChange}
-               onBlur={handleBlur}
+               onBlur={handleOnBlur}
                variant={variant}
-               value={inputValue}
-               helperText={helperText}
+               value={id === "password" ? passwordValue : usernameValue}
+               helperText={
+                    id === "password"
+                         ? !passwordIsValid && helperText
+                         : !usernameIsValid && helperText
+               }
                InputProps={{
                     startAdornment: (
                          <InputAdornment position="start">
@@ -82,7 +110,6 @@ InputField.propTypes = {
      id: PropTypes.string.isRequired,
      type: PropTypes.string,
      children: PropTypes.node,
-     isError: PropTypes.func,
      variant: PropTypes.string,
 };
 
