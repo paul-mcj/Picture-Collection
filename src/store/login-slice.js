@@ -2,17 +2,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 // utils
-import { isInputValid } from "../utils/functions";
+import { isInputValid, populateInit } from "../utils/functions";
 
 // init object value for state slice
-const initialLoginState = {
-     usernameValue: "",
-     usernameBlur: false,
-     usernameIsValid: true,
-     passwordValue: "",
-     passwordBlur: false,
-     passwordIsValid: true,
-};
+const initialLoginState = populateInit(["username", "password"]);
+console.log(initialLoginState);
 
 // create slice for redux state
 const loginSlice = createSlice({
@@ -46,7 +40,7 @@ const loginSlice = createSlice({
      },
 });
 
-// specifically grab slice actions
+// specifically grab action creators
 const loginActions = loginSlice.actions;
 
 export { loginActions, loginSlice };

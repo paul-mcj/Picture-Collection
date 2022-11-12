@@ -13,10 +13,16 @@ import { loginActions } from "../../store/login-slice";
 // react
 import { useEffect } from "react";
 
-//
-let initialRender = true;
+// hooks
+import useHttp from "../../hooks/use-http";
+
+// utils
+import { isInputValid } from "../../utils/functions";
 
 const Login = () => {
+     // custom hook logic
+     const { sendRequest, profileUser } = useHttp();
+
      // redux
      const dispatch = useDispatch();
 
@@ -35,28 +41,30 @@ const Login = () => {
      // handle form submission
      const handleSubmit = (e) => {
           e.preventDefault();
-          if (initialRender) {
-               initialRender = false;
+          // first, check immediate validity of both inputs (since reducer sets both to true by default, as to not show errors for empty values)
+          if (!isInputValid(usernameValue) || !isInputValid(passwordValue)) {
                dispatch(loginActions.checkUsername());
                dispatch(loginActions.checkPassword());
                return;
-          } else {
-               // fixme: first, check if both inputs are valid
+          }
+          // if both inputs are valid, send http request to see if user exists on firebase
+          if (usernameIsValid && passwordIsValid) {
                dispatch(loginActions.checkUsername());
                dispatch(loginActions.checkPassword());
-               // fixme: if not, each should have helper text explaining why
-               // fixme: if they pass validity, get the usernameValue, send http request to see if user exists on firebase.
-               if (usernameIsValid && passwordIsValid) {
-                    console.log("both inputs are valid!");
-                    // send http with usernameisvalid
-               }
-               // fixme: if not, <Toast /> user doesn't exist, and try again (reset the state)
-               // fixme: if they pass validity, AND the user exists, compare the password and username from firebase
-               // fixme: if they pass validity BUT don't match, <Toast /> wrong combo is used and tro try again (rest the state)
-               // fixme: only when all are valid can http request be sent to firebase to fill users pictures!
-               // fixme: only when successful can redux change Auth state, and thus go to MainContent after
-               // dispatch(authorizationActions.login());
+               sendRequest();
+               console.log(Object.entries(profileUser));
+               // Object.entries(profileUser).find((user) =>
+               //      user === usernameValue
+               //           ? console.log("user found")
+               //           : console.log("not found")
+               // );
           }
+          // fixme: if not, <Toast /> user doesn't exist, and try again (reset the state)
+          // fixme: if they pass validity, AND the user exists, compare the password and username from firebase
+          // fixme: if they pass validity BUT don't match, <Toast /> wrong combo is used and tro try again (rest the state)
+          // fixme: only when all are valid can http request be sent to firebase to fill users pictures!
+          // fixme: only when successful can redux change Auth state, and thus go to MainContent after
+          // dispatch(authorizationActions.login());
      };
 
      useEffect(() => {
