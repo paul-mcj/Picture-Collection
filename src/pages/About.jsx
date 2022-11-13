@@ -33,6 +33,12 @@ const About = () => {
                          transitions everywhere (material ui and framer motion
                          for more cool shit!)
                     </li>
+                    <a
+                         href="https://mui.com/material-ui/transitions/"
+                         target="_blank"
+                    >
+                         mui transitions
+                    </a>
                     <li>
                          all uses of color should point to index.js custom names
                          ex. "sx=secondaryShade1.main"

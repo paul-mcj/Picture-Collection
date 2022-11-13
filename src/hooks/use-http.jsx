@@ -1,17 +1,21 @@
 // react & misc
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+// redux
+import { loginActions } from "../store/login-slice";
+import { useDispatch } from "react-redux";
 
 const useHttp = () => {
+     // redux
+     const dispatch = useDispatch();
+
      // default GET request with custom hook
      const [method, setMethod] = useState("GET");
 
-     const [profileUser, setProfileUser] = useState(null);
-
+     // update method for http request
      const changeMethod = (methodName) => {
           setMethod(() => methodName);
      };
-
-     let userData;
 
      const sendRequest = async () => {
           try {
@@ -29,16 +33,14 @@ const useHttp = () => {
                     // }
                );
                const data = await res.json();
-               console.log(data);
-               userData = data;
+               dispatch(loginActions.getUserProfiles(data));
           } catch (err) {
                console.log(err);
                // fixme: <Toast /> error!
           }
-          setProfileUser(() => userData);
      };
 
-     return { sendRequest, changeMethod, profileUser };
+     return { sendRequest, changeMethod };
 };
 
 export default useHttp;

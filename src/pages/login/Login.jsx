@@ -9,6 +9,8 @@ import UsernameField from "../../components/ui/UsernameField";
 import { useDispatch, useSelector } from "react-redux";
 import { authorizationActions } from "../../store/authorization-slice";
 import { loginActions } from "../../store/login-slice";
+import { toastActions } from "../../store/toast-slice";
+import { loadingActions } from "../../store/loading-slice";
 
 // react
 import { useEffect } from "react";
@@ -21,7 +23,7 @@ import { isInputValid } from "../../utils/functions";
 
 const Login = () => {
      // custom hook logic
-     const { sendRequest, profileUser } = useHttp();
+     const { sendRequest } = useHttp();
 
      // redux
      const dispatch = useDispatch();
@@ -29,49 +31,103 @@ const Login = () => {
      // login redux values
      const usernameValue = useSelector((state) => state.login.usernameValue);
      const passwordValue = useSelector((state) => state.login.passwordValue);
-     const usernameBlur = useSelector((state) => state.login.usernameBlur);
-     const passwordBlur = useSelector((state) => state.login.passwordBlur);
      const usernameIsValid = useSelector(
           (state) => state.login.usernameIsValid
      );
      const passwordIsValid = useSelector(
           (state) => state.login.passwordIsValid
      );
+     const userProfiles = useSelector((state) => state.login.userProfiles);
+
+     // function to reset form inputs
+     const resetInputs = () => {
+          dispatch(loginActions.resetPasswordValue());
+          dispatch(loginActions.resetUsernameValue());
+     };
 
      // handle form submission
      const handleSubmit = (e) => {
           e.preventDefault();
-          // first, check immediate validity of both inputs (since reducer sets both to true by default, as to not show errors for empty values)
+
+          // first, check immediate validity of both inputs (since reducer sets both to true by default, as to not show errors for empty values) and update reducer state -- if either is not valid return
           if (!isInputValid(usernameValue) || !isInputValid(passwordValue)) {
                dispatch(loginActions.checkUsername());
                dispatch(loginActions.checkPassword());
                return;
           }
+
           // if both inputs are valid, send http request to see if user exists on firebase
           if (usernameIsValid && passwordIsValid) {
                dispatch(loginActions.checkUsername());
                dispatch(loginActions.checkPassword());
                sendRequest();
-               console.log(Object.entries(profileUser));
-               // Object.entries(profileUser).find((user) =>
-               //      user === usernameValue
-               //           ? console.log("user found")
-               //           : console.log("not found")
-               // );
+
+               // loading here
+               dispatch(loadingActions.toggleIsLoading());
+               let tryUser = Object.hasOwn(userProfiles, usernameValue);
+
+               // artificial wait while loading occurs
+               setTimeout(() => {
+                    // if the user doesn't exist update <Toast /> redux state
+                    if (!tryUser) {
+                         dispatch(
+                              toastActions.changeMessage(
+                                   `Error! Account user "${usernameValue}" does not exist. Please try another username.`
+                              )
+                         );
+                         dispatch(toastActions.setColor("error"));
+                         dispatch(toastActions.toggleIsOpen());
+                         // reset all input fields when closing
+                         dispatch(loginActions.resetPasswordValue());
+                         dispatch(loginActions.resetUsernameValue());
+                    }
+               }, 2000);
+
+               // artificial wait while loading occurs
+               setTimeout(() => {
+                    // if the user exists, compare the password and username from firebase
+                    if (tryUser) {
+                         let tryPassword = userProfiles[usernameValue].password;
+
+                         // if the password and username don't match, update the <Toast /> component
+                         if (passwordValue !== tryPassword) {
+                              dispatch(
+                                   toastActions.changeMessage(
+                                        `Warning! Password is not correct for username ${usernameValue}. Please try again.`
+                                   )
+                              );
+                              dispatch(toastActions.setColor("warning"));
+                              dispatch(toastActions.toggleIsOpen());
+                         }
+
+                         // fixme: if username and password match send http request to the backend to fill users pictures and change redux Auth state go to <MainContent />
+                         // update <Toast /> redux state to welcome user
+                         else {
+                              dispatch(authorizationActions.login());
+                              dispatch(
+                                   toastActions.changeMessage(
+                                        `Login Success! Welcome, ${usernameValue}!`
+                                   )
+                              );
+                              dispatch(toastActions.setColor("success"));
+                              dispatch(toastActions.toggleIsOpen());
+                         }
+                    }
+               }, 2000);
           }
-          // fixme: if not, <Toast /> user doesn't exist, and try again (reset the state)
-          // fixme: if they pass validity, AND the user exists, compare the password and username from firebase
-          // fixme: if they pass validity BUT don't match, <Toast /> wrong combo is used and tro try again (rest the state)
-          // fixme: only when all are valid can http request be sent to firebase to fill users pictures!
-          // fixme: only when successful can redux change Auth state, and thus go to MainContent after
-          // dispatch(authorizationActions.login());
      };
 
+     // due to react state updates being async, reducer state isn't updated after http request to check if user is valid from backend, so if it's an empty string update the state again
      useEffect(() => {
-          // reset input fields
-          dispatch(loginActions.resetPasswordValue());
-          dispatch(loginActions.resetUsernameValue());
-     }, [dispatch]);
+          if (userProfiles === "") {
+               sendRequest();
+          }
+     }, [userProfiles, sendRequest]);
+
+     // reset input fields
+     useEffect(() => {
+          resetInputs();
+     }, []);
 
      return (
           <StartingTemplate

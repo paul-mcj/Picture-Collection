@@ -1,9 +1,13 @@
 // components
 import MainContent from "./components/layout/MainContent";
 import AppEntry from "./components/layout/AppEntry";
+import Toast from "./components/layout/Toast";
 
 // redux
 import { useSelector } from "react-redux";
+
+// react and misc
+import { Fragment } from "react";
 
 const App = () => {
      // access redux state for authorization checking
@@ -11,12 +15,14 @@ const App = () => {
           (state) => state.authorization.isAuthorized
      );
 
+     // access toast redux
+     const isOpen = useSelector((state) => state.toast.isOpen);
+
      return (
-          <div>
+          <Fragment>
                {isAuthorized ? <MainContent /> : <AppEntry />}
-               {/* fixme: toast needs to be part of redux? always in App.jsx*/}
-               {/* <Toast /> */}
-          </div>
+               {isOpen && <Toast />}
+          </Fragment>
      );
 };
 

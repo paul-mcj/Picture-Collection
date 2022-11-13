@@ -5,7 +5,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import { isInputValid, populateInit } from "../utils/functions";
 
 // init object value for state slice
-const initialLoginState = populateInit(["username", "password"]);
+const initialLoginState = populateInit([
+     "username",
+     "password",
+     "confirmPassword",
+]);
+Object.assign(initialLoginState, { userProfiles: "" });
 console.log(initialLoginState);
 
 // create slice for redux state
@@ -19,11 +24,17 @@ const loginSlice = createSlice({
           changePasswordValue(state, action) {
                state.passwordValue = action.payload;
           },
+          changeConfirmPasswordValue(state, action) {
+               state.confirmPasswordValue = action.payload;
+          },
           toggleUsernameBlur(state) {
                state.usernameBlur = true;
           },
           togglePasswordBlur(state) {
                state.passwordBlur = true;
+          },
+          toggleConfirmPAsswordBlur(state) {
+               state.confirmPasswordBlur = true;
           },
           checkUsername(state) {
                state.usernameIsValid = isInputValid(state.usernameValue);
@@ -31,11 +42,23 @@ const loginSlice = createSlice({
           checkPassword(state) {
                state.passwordIsValid = isInputValid(state.passwordValue);
           },
+          checkConfirmPassword(state) {
+               state.confirmPasswordIsValid = isInputValid(
+                    state.confirmPasswordValue
+               );
+          },
           resetUsernameValue(state) {
                state.usernameValue = initialLoginState.usernameValue;
           },
           resetPasswordValue(state) {
                state.passwordValue = initialLoginState.passwordValue;
+          },
+          resetConfirmPasswordValue(state) {
+               state.confirmPasswordValue =
+                    initialLoginState.confirmPasswordValue;
+          },
+          getUserProfiles(state, action) {
+               state.userProfiles = action.payload;
           },
      },
 });

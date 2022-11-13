@@ -7,13 +7,10 @@ import Grid from "@mui/material/Grid";
 // components
 import FormButton from "./FormButton";
 
-const Form = ({
-     handleOnSubmit,
-     submitBtnText,
-     submitBtnStyle,
-     children,
-     disabled,
-}) => {
+// redux
+import { useSelector } from "react-redux";
+
+const Form = ({ handleOnSubmit, submitBtnText, submitBtnStyle, children }) => {
      //     // fixme: if all fields are not empty, then form submission is successful. this logic needs to be less strict to account for any fields given in the inputFields Array. additionally, the imageValue needs to be url compatible or it will be an error.
      //     // fixme: eventually add ability to drag and drop a jpeg?
      //     // fixme: create your own method called "isValid" that checks if the type is correct and trim()length !== 0 as well. compare for all fields, and then continue...
@@ -38,6 +35,9 @@ const Form = ({
      //     return value;
      // };
 
+     // loading redux state
+     const isLoading = useSelector((state) => state.loading.isLoading);
+
      return (
           <form onSubmit={handleOnSubmit}>
                <Grid container direction="column">
@@ -46,7 +46,6 @@ const Form = ({
                <FormButton
                     submitBtnText={submitBtnText}
                     submitBtnStyle={submitBtnStyle}
-                    disabled={disabled}
                />
           </form>
      );
@@ -57,7 +56,6 @@ Form.propTypes = {
      submitBtnText: PropTypes.string,
      submitBtnStyle: PropTypes.object,
      children: PropTypes.node.isRequired,
-     disabled: PropTypes.bool,
 };
 
 export default Form;

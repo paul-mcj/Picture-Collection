@@ -12,11 +12,37 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 // react & misc
 import { useState } from "react";
 
+// utils
+import { isInputValid } from "../../utils/functions";
+
 // components
 import UsernameField from "./UsernameField";
 import PasswordField from "./PasswordField";
 
+// redux
+import { useDispatch, useSelector } from "react-redux";
+import { loginActions } from "../../store/login-slice";
+
 const SignupStepper = () => {
+     // redux
+     const dispatch = useDispatch();
+
+     // login redux values
+     const usernameValue = useSelector((state) => state.login.usernameValue);
+     const passwordValue = useSelector((state) => state.login.passwordValue);
+     const confirmPasswordValue = useSelector(
+          (state) => state.login.confirmPasswordValue
+     );
+     const usernameIsValid = useSelector(
+          (state) => state.login.usernameIsValid
+     );
+     const passwordIsValid = useSelector(
+          (state) => state.login.passwordIsValid
+     );
+     const confirmPasswordIsValid = useSelector(
+          (state) => state.login.confirmPasswordIsValid
+     );
+
      // active step is 0 by default
      const [activeStep, setActiveStep] = useState(0);
      const [continueBtn, setContinueBtn] = useState(false);
@@ -25,8 +51,12 @@ const SignupStepper = () => {
           setContinueBtn(() => !continueBtn);
      };
 
-     const handleNext = () => {
+     const handleNext = (identifier) => {
+          // if the event identifier is from the <Username /> component, then send http req to check if user exists already
+          // fixme: loading icon
+          // if user doesn't exist, continue in stepper
           setActiveStep((prev) => prev + 1);
+          // if user exists, that means they need to pick a new username, display a toast that a new username is needed
      };
 
      const handleBack = () => {
@@ -39,9 +69,11 @@ const SignupStepper = () => {
                     <StepLabel>Create a username</StepLabel>
                     <StepContent>
                          <UsernameField variant="standard" />
-                         {/* continue button only shows up when field is valid (at least one character is there). Once continue occurs, check firebase to see if user is made or not (loading icon), and display a toast if success or error. if error, erase state and try again.) */}
-                         {continueBtn && (
-                              <Button onClick={handleNext}>Continue</Button>
+                         {/* continue button only shows up when field is valid (at least one character is there)*/}
+                         {isInputValid(usernameValue) && (
+                              <Button onClick={() => handleNext("username")}>
+                                   Continue
+                              </Button>
                          )}
                     </StepContent>
                </Step>
@@ -77,7 +109,8 @@ const SignupStepper = () => {
                     <StepContent>
                          <Typography>
                               Your account will automatically have some photos
-                              based on your selected interests!
+                              based on your selected interests! Choose at least
+                              (1):
                          </Typography>
                          <FormGroup>
                               <FormControlLabel

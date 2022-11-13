@@ -34,7 +34,7 @@ const InputField = ({ id, children, color, type, variant }) => {
      // redux
      const dispatch = useDispatch();
 
-     // logic redux values
+     // login redux values
      const usernameValue = useSelector((state) => state.login.usernameValue);
      const passwordValue = useSelector((state) => state.login.passwordValue);
      const usernameBlur = useSelector((state) => state.login.usernameBlur);
