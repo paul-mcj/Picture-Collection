@@ -10,7 +10,10 @@ const initialLoginState = populateInit([
      "password",
      "confirmPassword",
 ]);
-Object.assign(initialLoginState, { userProfiles: "" });
+Object.assign(initialLoginState, {
+     userProfiles: "",
+     animationSwipeDistanceX: 0,
+});
 console.log(initialLoginState);
 
 // create slice for redux state
@@ -18,6 +21,9 @@ const loginSlice = createSlice({
      name: "login",
      initialState: initialLoginState,
      reducers: {
+          updateAnimationSwipeDistanceX(state, action) {
+               state.animationSwipeDistanceX = action.payload;
+          },
           changeUsernameValue(state, action) {
                state.usernameValue = action.payload;
           },

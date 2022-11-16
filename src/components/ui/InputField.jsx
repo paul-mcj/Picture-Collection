@@ -1,6 +1,5 @@
 // react & misc
 import PropTypes from "prop-types";
-import { motion } from "framer-motion";
 
 // material ui
 import TextField from "@mui/material/TextField";
@@ -10,25 +9,11 @@ import InputAdornment from "@mui/material/InputAdornment";
 import { loginActions } from "../../store/login-slice";
 import { useDispatch, useSelector } from "react-redux";
 
-// fixme: password fields need visible/not visible state, and animation needs to "pop out" the field when in focus. Also, needs own validation depending on type (so passwords need regex, image needs url, etc.).
+// framer motion
+import { motion } from "framer-motion";
+import { Fragment } from "react";
 
-// let poop = "";
-
-// focus ? (poop = 1.02) : (poop = 1);
-
-// let elevation = (
-//     <motion.div
-//         initial={{ scale: 1 }}
-//         animate={{ scale: `${poop}` }}
-//         transition={{
-//             duration: 0.5,
-//         }}
-//     >
-//         <InputField id="username" label="Username" onFocus={xxx}>
-//             <PersonIcon />
-//         </InputField>
-//     </motion.div>
-// );
+// fixme: and animation needs to "pop out" the field when in focus. Also, needs own validation depending on type (so passwords need regex, image needs url, etc.).
 
 const InputField = ({ id, children, color, type, variant }) => {
      // redux
@@ -75,34 +60,49 @@ const InputField = ({ id, children, color, type, variant }) => {
      }
 
      return (
-          <TextField
-               margin="dense"
-               color={color === "Sign Up" ? "secondaryShade1" : "primaryShade1"}
-               id={id}
-               type={type}
-               multiline={id === "description" ? true : false}
-               label={
-                    !variant &&
-                    id[0].toUpperCase() + id.substring(1).toLowerCase()
-               }
-               error={id === "password" ? !passwordIsValid : !usernameIsValid}
-               onChange={handleOnChange}
-               onBlur={handleOnBlur}
-               variant={variant}
-               value={id === "password" ? passwordValue : usernameValue}
-               helperText={
-                    id === "password"
-                         ? !passwordIsValid && helperText
-                         : !usernameIsValid && helperText
-               }
-               InputProps={{
-                    startAdornment: (
-                         <InputAdornment position="start">
-                              {children}
-                         </InputAdornment>
-                    ),
-               }}
-          />
+          <Fragment>
+               <motion.div whileTap={{ scale: 1.2 }}>
+                    <TextField
+                         margin="dense"
+                         color={
+                              color === "Sign Up"
+                                   ? "secondaryShade1"
+                                   : "primaryShade1"
+                         }
+                         id={id}
+                         type={type}
+                         multiline={id === "description" ? true : false}
+                         label={
+                              !variant &&
+                              id[0].toUpperCase() +
+                                   id.substring(1).toLowerCase()
+                         }
+                         error={
+                              id === "password"
+                                   ? !passwordIsValid
+                                   : !usernameIsValid
+                         }
+                         onChange={handleOnChange}
+                         onBlur={handleOnBlur}
+                         variant={variant}
+                         value={
+                              id === "password" ? passwordValue : usernameValue
+                         }
+                         helperText={
+                              id === "password"
+                                   ? !passwordIsValid && helperText
+                                   : !usernameIsValid && helperText
+                         }
+                         InputProps={{
+                              startAdornment: (
+                                   <InputAdornment position="start">
+                                        {children}
+                                   </InputAdornment>
+                              ),
+                         }}
+                    />
+               </motion.div>
+          </Fragment>
      );
 };
 

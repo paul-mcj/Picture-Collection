@@ -41,9 +41,21 @@ const About = () => {
                     </a>
                     <li>
                          all uses of color should point to index.js custom names
-                         ex. "sx=secondaryShade1.main"
+                         ex. "sx=secondaryShade1.main". See below for help:
                     </li>
+                    <a
+                         href="https://stackoverflow.com/questions/40326565/how-do-you-change-the-stepper-color-on-react-material-ui"
+                         target="_blank"
+                    >
+                         palette color usage
+                    </a>
                     <li>give credit to unsplash??</li>
+                    <a
+                         href="https://unsplash.com/documentation#get-a-random-photo"
+                         target="_blank"
+                    >
+                         unsplash
+                    </a>
                </ul>
           </div>
      );

@@ -1,25 +1,28 @@
 // components
-import Form from "../../components/ui/Form";
-import Decal from "../../components/layout/Decal";
-import StartingTemplate from "../../components/layout/StartingTemplate";
-import PasswordField from "../../components/ui/PasswordField";
-import UsernameField from "../../components/ui/UsernameField";
+import Form from "../components/ui/Form";
+import Decal from "../components/layout/Decal";
+import StartingTemplate from "../components/layout/StartingTemplate";
+import PasswordField from "../components/ui/PasswordField";
+import UsernameField from "../components/ui/UsernameField";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { authorizationActions } from "../../store/authorization-slice";
-import { loginActions } from "../../store/login-slice";
-import { toastActions } from "../../store/toast-slice";
-import { loadingActions } from "../../store/loading-slice";
+import { authorizationActions } from "../store/authorization-slice";
+import { loginActions, loginSlice } from "../store/login-slice";
+import { toastActions } from "../store/toast-slice";
+import { loadingActions } from "../store/loading-slice";
 
 // react
 import { useEffect } from "react";
 
 // hooks
-import useHttp from "../../hooks/use-http";
+import useHttp from "../hooks/use-http";
 
 // utils
-import { isInputValid } from "../../utils/functions";
+import { isInputValid } from "../utils/functions";
+
+// framer motion
+import { motion } from "framer-motion";
 
 const Login = () => {
      // custom hook logic
@@ -38,6 +41,9 @@ const Login = () => {
           (state) => state.login.passwordIsValid
      );
      const userProfiles = useSelector((state) => state.login.userProfiles);
+     const distance = useSelector(
+          (state) => state.login.animationSwipeDistanceX
+     );
 
      // function to reset form inputs
      const resetInputs = () => {
@@ -67,6 +73,7 @@ const Login = () => {
                let tryUser = Object.hasOwn(userProfiles, usernameValue);
 
                // artificial wait while loading occurs
+               // fixme: suspense?
                setTimeout(() => {
                     // if the user doesn't exist update <Toast /> redux state
                     if (!tryUser) {

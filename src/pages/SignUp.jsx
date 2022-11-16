@@ -1,16 +1,16 @@
 // components
-import StartingTemplate from "../../components/layout/StartingTemplate";
-import Form from "../../components/ui/Form";
-import Decal from "../../components/layout/Decal";
-import SignupStepper from "../../components/ui/SignupStepper";
+import StartingTemplate from "../components/layout/StartingTemplate";
+import Form from "../components/ui/Form";
+import Decal from "../components/layout/Decal";
+import SignupStepper from "../components/ui/SignupStepper";
 
 // react
 import { useState, useEffect } from "react";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { authorizationActions } from "../../store/authorization-slice";
-import { loginActions } from "../../store/login-slice";
+import { authorizationActions } from "../store/authorization-slice";
+import { loginActions } from "../store/login-slice";
 
 const SignUp = () => {
      //redux

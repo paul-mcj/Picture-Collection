@@ -12,6 +12,12 @@ import { Link } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 
+// redux
+import { useSelector, useDispatch } from "react-redux";
+import { loginActions } from "../../store/login-slice";
+
+// fixme: framer motion animation, when flipping between these two pages add a flip along the x-axis or z-axis
+
 const StartingTemplate = ({
      color1,
      color2,
@@ -22,6 +28,14 @@ const StartingTemplate = ({
      link,
      linkText,
 }) => {
+     // redux
+     const dispatch = useDispatch();
+
+     // login redux
+     const distance = useSelector(
+          (state) => state.login.animationSwipeDistanceX
+     );
+
      return (
           <Fragment>
                {/* <Decal color1={color1} color2={color2} /> */}
@@ -34,7 +48,8 @@ const StartingTemplate = ({
                          position: "absolute",
                          zIndex: 5,
                          top: "0",
-                         // height: "98vh", fixme: changes to grid, as signup and login pages need different vertical spacing/height
+                         // height: "98vh",
+                         //fixme: changes to grid, as signup and login pages need different vertical spacing/height
                     }}
                >
                     <Typography component="header" sx={{ fontSize: "40px" }}>
