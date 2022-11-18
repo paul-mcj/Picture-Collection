@@ -8,9 +8,12 @@ import UsernameField from "../components/ui/UsernameField";
 // redux
 import { useDispatch, useSelector } from "react-redux";
 import { authorizationActions } from "../store/authorization-slice";
-import { loginActions, loginSlice } from "../store/login-slice";
+import { loginActions } from "../store/login-slice";
 import { toastActions } from "../store/toast-slice";
 import { loadingActions } from "../store/loading-slice";
+
+// react router dom
+import { useNavigate } from "react-router-dom";
 
 // react
 import { useEffect } from "react";
@@ -21,10 +24,10 @@ import useHttp from "../hooks/use-http";
 // utils
 import { isInputValid } from "../utils/functions";
 
-// framer motion
-import { motion } from "framer-motion";
-
 const Login = () => {
+     // for redirect purposes
+     const navigate = useNavigate();
+
      // custom hook logic
      const { sendRequest } = useHttp();
 
@@ -41,15 +44,6 @@ const Login = () => {
           (state) => state.login.passwordIsValid
      );
      const userProfiles = useSelector((state) => state.login.userProfiles);
-     const distance = useSelector(
-          (state) => state.login.animationSwipeDistanceX
-     );
-
-     // function to reset form inputs
-     const resetInputs = () => {
-          dispatch(loginActions.resetPasswordValue());
-          dispatch(loginActions.resetUsernameValue());
-     };
 
      // handle form submission
      const handleSubmit = (e) => {
@@ -100,7 +94,7 @@ const Login = () => {
                          if (passwordValue !== tryPassword) {
                               dispatch(
                                    toastActions.changeMessage(
-                                        `Warning! Password is not correct for username ${usernameValue}. Please try again.`
+                                        `Warning! Password is not correct for user ${usernameValue}. Please try again.`
                                    )
                               );
                               dispatch(toastActions.setColor("warning"));
@@ -110,6 +104,7 @@ const Login = () => {
                          // fixme: if username and password match send http request to the backend to fill users pictures and change redux Auth state go to <MainContent />
                          // update <Toast /> redux state to welcome user
                          else {
+                              navigate("/main-content", { replace: true });
                               dispatch(authorizationActions.login());
                               dispatch(
                                    toastActions.changeMessage(
@@ -126,15 +121,14 @@ const Login = () => {
 
      // due to react state updates being async, reducer state isn't updated after http request to check if user is valid from backend, so if it's an empty string update the state again
      useEffect(() => {
-          if (userProfiles === "") {
-               sendRequest();
-          }
+          userProfiles === "" && sendRequest();
      }, [userProfiles, sendRequest]);
 
      // reset input fields
      useEffect(() => {
-          resetInputs();
-     }, []);
+          dispatch(loginActions.resetPasswordValue());
+          dispatch(loginActions.resetUsernameValue());
+     }, [dispatch]);
 
      return (
           <StartingTemplate
@@ -155,7 +149,6 @@ const Login = () => {
                     submitBtnStyle={{
                          background:
                               "linear-gradient(to left, #e6a212, #ffb414)",
-                         mt: "10em",
                     }}
                >
                     <UsernameField />

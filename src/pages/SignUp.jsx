@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authorizationActions } from "../store/authorization-slice";
 import { loginActions } from "../store/login-slice";
+import { loadingActions } from "../store/loading-slice";
 
 const SignUp = () => {
      //redux
@@ -21,9 +22,12 @@ const SignUp = () => {
 
      // handle form submission
      const handleSubmit = () => {
+          dispatch(loadingActions.toggleIsLoading());
+
           // fixme: if any field is empty, an error needs to occur before finalizing form submission
-          // fixme: reach into each validation state for every input field, and only when all are valid can http request be sent to firebase!
+          // fixme: then, send http request be sent to firebase!
           // fixme: show a progress meter/modal when creating a new profile! automatically redirect to login page
+          // fixme: dispatch toast saying account was successfully created, try logging in now!
      };
 
      // reset input fields

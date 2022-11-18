@@ -5,6 +5,9 @@ import EastOutlinedIcon from "@mui/icons-material/EastOutlined";
 // react & misc
 import PropTypes from "prop-types";
 
+// framer motion
+import { motion } from "framer-motion";
+
 // components
 import Loading from "../../components/assets/Loading";
 
@@ -16,18 +19,21 @@ const FormButton = ({ submitBtnText, submitBtnStyle }) => {
      const isLoading = useSelector((state) => state.loading.isLoading);
 
      return (
-          <Fab
-               disabled={isLoading}
-               component="button"
-               type="submit"
-               variant="extended"
-               style={{ alignSelf: "flex-end" }}
-               sx={submitBtnStyle}
-          >
-               {submitBtnText}
-               <EastOutlinedIcon sx={{ ml: 2 }} />
-               {isLoading && <Loading />}
-          </Fab>
+          <div style={{ display: "inline-block" }}>
+               <motion.div whileTap={{ scale: 1.2 }}>
+                    <Fab
+                         disabled={isLoading}
+                         component="button"
+                         type="submit"
+                         variant="extended"
+                         sx={submitBtnStyle}
+                    >
+                         {submitBtnText}
+                         <EastOutlinedIcon sx={{ ml: 2 }} />
+                         {isLoading && <Loading />}
+                    </Fab>
+               </motion.div>
+          </div>
      );
 };
 

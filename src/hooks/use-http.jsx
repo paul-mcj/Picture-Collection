@@ -4,6 +4,7 @@ import { useState } from "react";
 // redux
 import { loginActions } from "../store/login-slice";
 import { useDispatch } from "react-redux";
+import { toastActions } from "../store/toast-slice";
 
 const useHttp = () => {
      // redux
@@ -35,8 +36,11 @@ const useHttp = () => {
                const data = await res.json();
                dispatch(loginActions.getUserProfiles(data));
           } catch (err) {
-               console.log(err);
-               // fixme: <Toast /> error!
+               dispatch(
+                    toastActions.changeMessage(`An error has occurred: ${err}`)
+               );
+               dispatch(toastActions.setColor("error"));
+               dispatch(toastActions.toggleIsOpen());
           }
      };
 

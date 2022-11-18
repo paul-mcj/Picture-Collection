@@ -12,12 +12,12 @@ import PropTypes from "prop-types";
 // hooks
 import usePassword from "../../hooks/use-password";
 
-const PasswordField = ({ variant }) => {
+const ConfirmPasswordField = ({ variant }) => {
      const { showPassword, handleShowPassword } = usePassword();
 
      return (
           <InputField
-               id="password"
+               id="confirmPassword"
                type={showPassword ? "password" : "text"}
                variant={variant}
           >
@@ -28,8 +28,8 @@ const PasswordField = ({ variant }) => {
      );
 };
 
-PasswordField.propType = {
+ConfirmPasswordField.propType = {
      variant: PropTypes.string,
 };
 
-export default PasswordField;
+export default ConfirmPasswordField;

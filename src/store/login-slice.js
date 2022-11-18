@@ -39,7 +39,7 @@ const loginSlice = createSlice({
           togglePasswordBlur(state) {
                state.passwordBlur = true;
           },
-          toggleConfirmPAsswordBlur(state) {
+          toggleConfirmPasswordBlur(state) {
                state.confirmPasswordBlur = true;
           },
           checkUsername(state) {

@@ -10,7 +10,10 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
 // react & misc
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+// hooks
+import useHttp from "../../hooks/use-http";
 
 // utils
 import { isInputValid } from "../../utils/functions";
@@ -18,14 +21,19 @@ import { isInputValid } from "../../utils/functions";
 // components
 import UsernameField from "./UsernameField";
 import PasswordField from "./PasswordField";
+import ConfirmPasswordField from "./ConfirmPasswordField";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
 import { loginActions } from "../../store/login-slice";
+import { toastActions } from "../../store/toast-slice";
 
 const SignupStepper = () => {
      // redux
      const dispatch = useDispatch();
+
+     // destructure custom http hook
+     const { sendRequest } = useHttp();
 
      // login redux values
      const usernameValue = useSelector((state) => state.login.usernameValue);
@@ -42,6 +50,7 @@ const SignupStepper = () => {
      const confirmPasswordIsValid = useSelector(
           (state) => state.login.confirmPasswordIsValid
      );
+     const userProfiles = useSelector((state) => state.login.userProfiles);
 
      // active step is 0 by default
      const [activeStep, setActiveStep] = useState(0);
@@ -51,17 +60,51 @@ const SignupStepper = () => {
           setContinueBtn(() => !continueBtn);
      };
 
-     const handleNext = (identifier) => {
-          // if the event identifier is from the <Username /> component, then send http req to check if user exists already
-          // fixme: loading icon
-          // if user doesn't exist, continue in stepper
-          setActiveStep((prev) => prev + 1);
-          // if user exists, that means they need to pick a new username, display a toast that a new username is needed
+     const handleNext = () => {
+          // if the event identifier is from the <Username /> component check userProfiles to see if user exists already
+          let tryUser = Object.hasOwn(userProfiles, usernameValue);
+          // if user exists, that means they need to pick a new username, display an error toast
+          if (tryUser) {
+               dispatch(
+                    toastActions.changeMessage(
+                         `User ${usernameValue} already exists. Please choose another username.`
+                    )
+               );
+               dispatch(toastActions.setColor("error"));
+               dispatch(toastActions.toggleIsOpen());
+               return;
+          }
+          // if password and confirm password fields aren't exact matches, show error toast
+          if (
+               isInputValid(confirmPasswordValue) &&
+               passwordValue !== confirmPasswordValue
+          ) {
+               dispatch(
+                    toastActions.changeMessage(
+                         `Invalid entry. Please make sure your password is re-entered correctly.`
+                    )
+               );
+               dispatch(toastActions.setColor("error"));
+               dispatch(toastActions.toggleIsOpen());
+               // also reset confirmPassword
+               dispatch(loginActions.resetConfirmPasswordValue());
+               return;
+          }
+          // all other components calling this function can continue in stepper
+          else {
+               setActiveStep((prev) => prev + 1);
+          }
      };
 
      const handleBack = () => {
           setActiveStep((prev) => prev - 1);
      };
+
+     // immediately fetch all users when component loads
+     //    fixme: useCallback wrap?
+     useEffect(() => {
+          userProfiles === "" && sendRequest();
+     }, [userProfiles, sendRequest]);
 
      return (
           <Stepper activeStep={activeStep} orientation="vertical">
@@ -71,9 +114,7 @@ const SignupStepper = () => {
                          <UsernameField variant="standard" />
                          {/* continue button only shows up when field is valid (at least one character is there)*/}
                          {isInputValid(usernameValue) && (
-                              <Button onClick={() => handleNext("username")}>
-                                   Continue
-                              </Button>
+                              <Button onClick={handleNext}>Continue</Button>
                          )}
                     </StepContent>
                </Step>
@@ -81,9 +122,11 @@ const SignupStepper = () => {
                <Step>
                     <StepLabel>Enter a password</StepLabel>
                     <StepContent>
-                         <PasswordField />
+                         <PasswordField variant="standard" />
                          {/* "continue" button only shows if field is valid (at least 5 chars)*/}
-                         <Button onClick={handleNext}>Continue</Button>
+                         {isInputValid(passwordValue) && (
+                              <Button onClick={handleNext}>Continue</Button>
+                         )}
                          {/* back button is always shown */}
                          <Button onClick={handleBack}>Back</Button>
                     </StepContent>
@@ -91,9 +134,11 @@ const SignupStepper = () => {
                <Step>
                     <StepLabel>Re-enter password</StepLabel>
                     <StepContent>
-                         <PasswordField />
+                         <ConfirmPasswordField variant="standard" />
                          {/* continue button only allowed if it matched the above password field */}
-                         <Button onClick={handleNext}>Continue</Button>
+                         {isInputValid(confirmPasswordValue) && (
+                              <Button onClick={handleNext}>Continue</Button>
+                         )}
                          {/* back button is always shown */}
                          <Button onClick={handleBack}>Back</Button>
                     </StepContent>
