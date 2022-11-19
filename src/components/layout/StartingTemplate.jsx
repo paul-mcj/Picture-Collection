@@ -71,8 +71,6 @@ const StartingTemplate = ({
           // function navigates from current page to target page and resets the isSwiped state
           const reRoute = (curPage, targetPage) => {
                if (pathname === curPage) {
-                    console.log("her");
-
                     navigate(targetPage);
                     setIsSwiped(() => false);
                     dispatch(loginActions.updateAnimationSwipeDistanceX(0));

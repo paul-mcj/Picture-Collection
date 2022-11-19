@@ -36,11 +36,6 @@ const SignupStepper = () => {
      const { sendRequest } = useHttp();
 
      // login redux values
-     const usernameValue = useSelector((state) => state.login.usernameValue);
-     const passwordValue = useSelector((state) => state.login.passwordValue);
-     const confirmPasswordValue = useSelector(
-          (state) => state.login.confirmPasswordValue
-     );
      const usernameIsValid = useSelector(
           (state) => state.login.usernameIsValid
      );
@@ -50,15 +45,17 @@ const SignupStepper = () => {
      const confirmPasswordIsValid = useSelector(
           (state) => state.login.confirmPasswordIsValid
      );
+     const usernameValue = useSelector((state) => state.login.usernameValue);
+     const passwordValue = useSelector((state) => state.login.passwordValue);
+     const confirmPasswordValue = useSelector(
+          (state) => state.login.confirmPasswordValue
+     );
+     const interestsIsValid = useSelector((state) => state.interestsIsValid);
+
      const userProfiles = useSelector((state) => state.login.userProfiles);
 
      // active step is 0 by default
      const [activeStep, setActiveStep] = useState(0);
-     const [continueBtn, setContinueBtn] = useState(false);
-
-     const showContinueBtn = () => {
-          setContinueBtn(() => !continueBtn);
-     };
 
      const handleNext = () => {
           // if the event identifier is from the <Username /> component check userProfiles to see if user exists already
@@ -93,6 +90,10 @@ const SignupStepper = () => {
           // all other components calling this function can continue in stepper
           else {
                setActiveStep((prev) => prev + 1);
+               // fixme: these disptaches need to be placed more accurately
+               // dispatch(loginActions.toggleUsernameBlur());
+               // dispatch(loginActions.togglePasswordBlur());
+               // dispatch(loginActions.toggleConfirmPasswordBlur());
           }
      };
 
@@ -109,7 +110,9 @@ const SignupStepper = () => {
      return (
           <Stepper activeStep={activeStep} orientation="vertical">
                <Step>
-                    <StepLabel>Create a username</StepLabel>
+                    <StepLabel error={!usernameIsValid}>
+                         Create a username
+                    </StepLabel>
                     <StepContent>
                          <UsernameField variant="standard" />
                          {/* continue button only shows up when field is valid (at least one character is there)*/}
@@ -120,7 +123,9 @@ const SignupStepper = () => {
                </Step>
 
                <Step>
-                    <StepLabel>Enter a password</StepLabel>
+                    <StepLabel error={!passwordIsValid}>
+                         Enter a password
+                    </StepLabel>
                     <StepContent>
                          <PasswordField variant="standard" />
                          {/* "continue" button only shows if field is valid (at least 5 chars)*/}
@@ -132,7 +137,9 @@ const SignupStepper = () => {
                     </StepContent>
                </Step>
                <Step>
-                    <StepLabel>Re-enter password</StepLabel>
+                    <StepLabel error={!confirmPasswordIsValid}>
+                         Re-enter password
+                    </StepLabel>
                     <StepContent>
                          <ConfirmPasswordField variant="standard" />
                          {/* continue button only allowed if it matched the above password field */}
@@ -150,7 +157,10 @@ const SignupStepper = () => {
                          },
                     }}
                >
-                    <StepLabel>What are your interests?</StepLabel>
+                    {/* fixme: label needs checking error prop also: error={!passwordIsValid} */}
+                    <StepLabel error={interestsIsValid}>
+                         What are your interests?
+                    </StepLabel>
                     <StepContent>
                          <Typography>
                               Your account will automatically have some photos

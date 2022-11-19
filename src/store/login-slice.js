@@ -13,6 +13,8 @@ const initialLoginState = populateInit([
 Object.assign(initialLoginState, {
      userProfiles: "",
      animationSwipeDistanceX: 0,
+     interests: [],
+     interestsIsValid: true,
 });
 console.log(initialLoginState);
 
@@ -65,6 +67,18 @@ const loginSlice = createSlice({
           },
           getUserProfiles(state, action) {
                state.userProfiles = action.payload;
+          },
+          addToInterests(state, action) {
+               // fixme: first check if the action is in the array (utils folder should have a new function for this!)
+               state.interests = state.interests.push(action.payload);
+          },
+          removeFromInterests(state, action) {
+               // fixme: find action in array and remove it
+          },
+          checkInterests(state) {
+               state.interests.length > 0
+                    ? (state.interestsIsValid = true)
+                    : (state.interestsIsValid = false);
           },
      },
 });

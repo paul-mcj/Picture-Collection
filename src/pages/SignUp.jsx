@@ -13,18 +13,44 @@ import { authorizationActions } from "../store/authorization-slice";
 import { loginActions } from "../store/login-slice";
 import { loadingActions } from "../store/loading-slice";
 
+// utils
+import { isInputValid } from "../utils/functions";
+
 const SignUp = () => {
      //redux
      const dispatch = useDispatch();
+
+     // login redux values
+     const usernameValue = useSelector((state) => state.login.usernameValue);
+     const passwordValue = useSelector((state) => state.login.passwordValue);
+     const confirmPasswordValue = useSelector(
+          (state) => state.login.confirmPasswordValue
+     );
+     const interestsIsValid = useSelector(
+          (state) => state.login.interestsIsValid
+     );
 
      // state depends on if theres at least one interest checked off for sign up stepper (true by default)
      const [isDisabled, setIsDisabled] = useState(true);
 
      // handle form submission
-     const handleSubmit = () => {
-          dispatch(loadingActions.toggleIsLoading());
+     const handleSubmit = (e) => {
+          e.preventDefault();
 
-          // fixme: if any field is empty, an error needs to occur before finalizing form submission
+          // if any field is empty, blur for the appropriate field needs to occur
+          if (
+               !isInputValid(usernameValue) ||
+               !isInputValid(passwordValue) ||
+               !isInputValid(confirmPasswordValue) ||
+               interestsIsValid
+          ) {
+               dispatch(loginActions.checkUsername());
+               dispatch(loginActions.checkPassword());
+               dispatch(loginActions.checkConfirmPassword());
+               dispatch(loginActions.checkInterests());
+               return;
+          }
+
           // fixme: then, send http request be sent to firebase!
           // fixme: show a progress meter/modal when creating a new profile! automatically redirect to login page
           // fixme: dispatch toast saying account was successfully created, try logging in now!
