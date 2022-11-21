@@ -33,7 +33,7 @@ const SignupStepper = () => {
      const dispatch = useDispatch();
 
      // destructure custom http hook
-     const { sendRequest } = useHttp();
+     const { getRequest } = useHttp();
 
      // login redux values
      const usernameIsValid = useSelector(
@@ -50,13 +50,16 @@ const SignupStepper = () => {
      const confirmPasswordValue = useSelector(
           (state) => state.login.confirmPasswordValue
      );
-     const interestsIsValid = useSelector((state) => state.interestsIsValid);
-
+     const interestsIsValid = useSelector(
+          (state) => state.login.interestsIsValid
+     );
+     const interests = useSelector((state) => state.login.interests);
      const userProfiles = useSelector((state) => state.login.userProfiles);
 
      // active step is 0 by default
      const [activeStep, setActiveStep] = useState(0);
 
+     // the next button in the <Stepper /> and its logic
      const handleNext = () => {
           // if the event identifier is from the <Username /> component check userProfiles to see if user exists already
           let tryUser = Object.hasOwn(userProfiles, usernameValue);
@@ -97,15 +100,21 @@ const SignupStepper = () => {
           }
      };
 
+     // the back button always changes state
      const handleBack = () => {
           setActiveStep((prev) => prev - 1);
+     };
+
+     // update redux state of interests when user checks/unchecks a box
+     const handleCheckboxOnChange = (interest) => {
+          dispatch(loginActions.updateInterests(interest));
      };
 
      // immediately fetch all users when component loads
      //    fixme: useCallback wrap?
      useEffect(() => {
-          userProfiles === "" && sendRequest();
-     }, [userProfiles, sendRequest]);
+          userProfiles === "" && getRequest();
+     }, [userProfiles, getRequest]);
 
      return (
           <Stepper activeStep={activeStep} orientation="vertical">
@@ -157,8 +166,7 @@ const SignupStepper = () => {
                          },
                     }}
                >
-                    {/* fixme: label needs checking error prop also: error={!passwordIsValid} */}
-                    <StepLabel error={interestsIsValid}>
+                    <StepLabel error={!interestsIsValid}>
                          What are your interests?
                     </StepLabel>
                     <StepContent>
@@ -171,9 +179,11 @@ const SignupStepper = () => {
                               <FormControlLabel
                                    control={
                                         <Checkbox
-                                             onChange={() => {
-                                                  console.log("sports checked");
-                                             }}
+                                             onChange={() =>
+                                                  handleCheckboxOnChange(
+                                                       "sports"
+                                                  )
+                                             }
                                              color="secondaryShade2"
                                         />
                                    }
@@ -184,7 +194,9 @@ const SignupStepper = () => {
                                    control={
                                         <Checkbox
                                              onChange={() => {
-                                                  console.log("food checked");
+                                                  handleCheckboxOnChange(
+                                                       "food"
+                                                  );
                                              }}
                                              color="secondaryShade2"
                                         />
@@ -196,7 +208,9 @@ const SignupStepper = () => {
                                    control={
                                         <Checkbox
                                              onChange={() => {
-                                                  console.log("travel checked");
+                                                  handleCheckboxOnChange(
+                                                       "travel"
+                                                  );
                                              }}
                                              color="secondaryShade2"
                                         />
@@ -208,7 +222,9 @@ const SignupStepper = () => {
                                    control={
                                         <Checkbox
                                              onChange={() => {
-                                                  console.log("movies checked");
+                                                  handleCheckboxOnChange(
+                                                       "movies"
+                                                  );
                                              }}
                                              color="secondaryShade2"
                                         />
@@ -219,11 +235,11 @@ const SignupStepper = () => {
                               <FormControlLabel
                                    control={
                                         <Checkbox
-                                             onChange={() => {
-                                                  console.log(
-                                                       "shopping checked"
-                                                  );
-                                             }}
+                                             onChange={() =>
+                                                  handleCheckboxOnChange(
+                                                       "shopping"
+                                                  )
+                                             }
                                              color="secondaryShade2"
                                         />
                                    }
@@ -233,9 +249,11 @@ const SignupStepper = () => {
                               <FormControlLabel
                                    control={
                                         <Checkbox
-                                             onChange={() => {
-                                                  console.log("Games checked");
-                                             }}
+                                             onChange={() =>
+                                                  handleCheckboxOnChange(
+                                                       "games"
+                                                  )
+                                             }
                                              color="secondaryShade2"
                                         />
                                    }

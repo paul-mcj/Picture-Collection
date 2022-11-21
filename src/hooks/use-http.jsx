@@ -10,31 +10,14 @@ const useHttp = () => {
      // redux
      const dispatch = useDispatch();
 
-     // default GET request with custom hook
-     const [method, setMethod] = useState("GET");
-
-     // update method for http request
-     const changeMethod = (methodName) => {
-          setMethod(() => methodName);
-     };
-
-     const sendRequest = async () => {
+     const getRequest = async () => {
           try {
                const res = await fetch(
-                    "https://react-refresher-a93ac-default-rtdb.firebaseio.com/users.json",
-                    {
-                         method,
-                    }
-
-                    // {
-                    //      body: JSON.stringify(),
-                    //  headers: {
-                    //       "Content-type": "application/json; charset=UTF-8",
-                    //  },
-                    // }
+                    "https://react-refresher-a93ac-default-rtdb.firebaseio.com/users.json"
                );
                const data = await res.json();
                dispatch(loginActions.getUserProfiles(data));
+               console.log(data);
           } catch (err) {
                dispatch(
                     toastActions.changeMessage(`An error has occurred: ${err}`)
@@ -44,7 +27,33 @@ const useHttp = () => {
           }
      };
 
-     return { sendRequest, changeMethod };
+     const postRequest = async (newUserData) => {
+          try {
+               await fetch(
+                    "https://react-refresher-a93ac-default-rtdb.firebaseio.com/users.json",
+                    {
+                         method: "POST",
+                    },
+
+                    {
+                         body: JSON.stringify(newUserData),
+                         headers: {
+                              "Content-type": "application/json; charset=UTF-8",
+                         },
+                    }
+               );
+               // add new user to login redux
+               dispatch(loginActions.addNewUser(newUserData));
+          } catch (err) {
+               dispatch(
+                    toastActions.changeMessage(`An error has occurred: ${err}`)
+               );
+               dispatch(toastActions.setColor("error"));
+               dispatch(toastActions.toggleIsOpen());
+          }
+     };
+
+     return { getRequest, postRequest };
 };
 
 export default useHttp;

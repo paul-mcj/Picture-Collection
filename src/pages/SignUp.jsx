@@ -5,7 +5,7 @@ import Decal from "../components/layout/Decal";
 import SignupStepper from "../components/ui/SignupStepper";
 
 // react
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
@@ -16,9 +16,15 @@ import { loadingActions } from "../store/loading-slice";
 // utils
 import { isInputValid } from "../utils/functions";
 
+// hooks
+import useHttp from "../hooks/use-http";
+
 const SignUp = () => {
      //redux
      const dispatch = useDispatch();
+
+     // custom hooks
+     const { postRequest } = useHttp();
 
      // login redux values
      const usernameValue = useSelector((state) => state.login.usernameValue);
@@ -26,12 +32,8 @@ const SignUp = () => {
      const confirmPasswordValue = useSelector(
           (state) => state.login.confirmPasswordValue
      );
-     const interestsIsValid = useSelector(
-          (state) => state.login.interestsIsValid
-     );
-
-     // state depends on if theres at least one interest checked off for sign up stepper (true by default)
-     const [isDisabled, setIsDisabled] = useState(true);
+     const interests = useSelector((state) => state.login.interests);
+     const userProfiles = useSelector((state) => state.login.userProfiles);
 
      // handle form submission
      const handleSubmit = (e) => {
@@ -42,7 +44,8 @@ const SignUp = () => {
                !isInputValid(usernameValue) ||
                !isInputValid(passwordValue) ||
                !isInputValid(confirmPasswordValue) ||
-               interestsIsValid
+               interests.length < 1 ||
+               interests === null
           ) {
                dispatch(loginActions.checkUsername());
                dispatch(loginActions.checkPassword());
@@ -50,8 +53,24 @@ const SignUp = () => {
                dispatch(loginActions.checkInterests());
                return;
           }
+          dispatch(loadingActions.toggleIsLoading());
+          // create the new user object
+          // fixme: this will have to be in another file as a function, where image objects can be constructed from unsplash with provided interests!
+          let newUser = {
+               user: `${usernameValue}`,
+               data: {
+                    password: passwordValue,
+                    data: [
+                         { image1: { image: "imageHere", url: "urlHere" } },
+                         {},
+                         {},
+                    ],
+               },
+          };
+          // send http request to firebase and add new user object
+          postRequest(newUser);
+          console.log(userProfiles);
 
-          // fixme: then, send http request be sent to firebase!
           // fixme: show a progress meter/modal when creating a new profile! automatically redirect to login page
           // fixme: dispatch toast saying account was successfully created, try logging in now!
      };
@@ -73,7 +92,6 @@ const SignUp = () => {
                linkText=" Sign in"
           >
                <Form
-                    disabled={isDisabled}
                     handleOnSubmit={handleSubmit}
                     submitBtnText="Sign Up"
                     submitBtnStyle={{

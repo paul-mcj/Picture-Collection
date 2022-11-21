@@ -29,7 +29,7 @@ const Login = () => {
      const navigate = useNavigate();
 
      // custom hook logic
-     const { sendRequest } = useHttp();
+     const { getRequest } = useHttp();
 
      // redux
      const dispatch = useDispatch();
@@ -60,7 +60,7 @@ const Login = () => {
           if (usernameIsValid && passwordIsValid) {
                dispatch(loginActions.checkUsername());
                dispatch(loginActions.checkPassword());
-               sendRequest();
+               getRequest();
 
                // loading here
                dispatch(loadingActions.toggleIsLoading());
@@ -121,8 +121,8 @@ const Login = () => {
 
      // due to react state updates being async, reducer state isn't updated after http request to check if user is valid from backend, so if it's an empty string update the state again
      useEffect(() => {
-          userProfiles === "" && sendRequest();
-     }, [userProfiles, sendRequest]);
+          userProfiles === "" && getRequest();
+     }, [userProfiles, getRequest]);
 
      // reset input fields
      useEffect(() => {

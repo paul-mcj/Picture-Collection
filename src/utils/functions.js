@@ -20,4 +20,9 @@ const isInputValid = (inputValue) => {
      return inputValue.trim().length === 0 ? false : true;
 };
 
-export { populateInit, isInputValid };
+// function returns position of a given value in an array if it matches the correct value of any previous array element
+const defineIndex = (array, interestItem) => {
+     return array.findIndex((item) => item === interestItem);
+};
+
+export { populateInit, isInputValid, defineIndex };

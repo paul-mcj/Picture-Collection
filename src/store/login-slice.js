@@ -2,7 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 // utils
-import { isInputValid, populateInit } from "../utils/functions";
+import { isInputValid, populateInit, defineIndex } from "../utils/functions";
 
 // init object value for state slice
 const initialLoginState = populateInit([
@@ -68,17 +68,24 @@ const loginSlice = createSlice({
           getUserProfiles(state, action) {
                state.userProfiles = action.payload;
           },
-          addToInterests(state, action) {
-               // fixme: first check if the action is in the array (utils folder should have a new function for this!)
-               state.interests = state.interests.push(action.payload);
-          },
-          removeFromInterests(state, action) {
-               // fixme: find action in array and remove it
+          updateInterests(state, action) {
+               // find index of item in interests array
+               let index = defineIndex(state.interests, action.payload);
+               // if its not found, add it to state array, otherwise remove it from state array
+               index === -1
+                    ? state.interests.push(action.payload)
+                    : state.interests.splice(index, 1);
           },
           checkInterests(state) {
                state.interests.length > 0
                     ? (state.interestsIsValid = true)
                     : (state.interestsIsValid = false);
+          },
+          addNewUser(state, action) {
+               state.userProfiles = {
+                    ...state.userProfiles,
+                    [action.payload.user]: action.payload.data,
+               };
           },
      },
 });
